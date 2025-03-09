@@ -52,16 +52,15 @@ func main() {
 		diff := t.Sub(info.ModTime()).Hours()
 
 		if diff > 24 {
-			log.Println("Dir to Remove: ", absPath)
 			e := os.RemoveAll(absPath)
 			if e != nil {
-				log.Fatal("Error while removing dir: ", e)
+				log.Fatal("Error while removing", absPath, e)
 			} else {
 				delete_counter++
 			}
 		}
 	}
 	if delete_counter > 0 {
-		log.Println("Directories deleted: ", delete_counter)
+		log.Println("Files & Folders deleted: ", delete_counter)
 	}
 }
