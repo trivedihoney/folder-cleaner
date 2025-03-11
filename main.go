@@ -1,6 +1,7 @@
 package main
 
 import (
+	"flag"
 	"log"
 	"os"
 	"path/filepath"
@@ -13,14 +14,26 @@ func main() {
 		log.Fatal("Error while opening log file", err)
 	}
 	defer file.Close()
+	log.SetOutput(file)
 
-	argsWithoutProg := os.Args[1:]
+	log.Println("Service triggered")
+
+	max_age_hours_ptr := flag.Int("max-age-hours", -1, "Files older than this will be deleted")
+	flag.Parse()
+
+	if *max_age_hours_ptr == -1 {
+		log.Fatal("Please provide the max-age-hours flag")
+	} else if *max_age_hours_ptr <= 0 {
+		log.Fatal("max-age-hours should be greater than 0")
+	}
+
+	max_age_hours := *max_age_hours_ptr
+
+	argsWithoutProg := flag.Args()
 
 	if len(argsWithoutProg) == 0 {
 		log.Fatal("Please provide the path to the folder to clean up")
 	}
-
-	log.SetOutput(file)
 
 	// Validate the path
 	path := argsWithoutProg[0]
@@ -30,8 +43,6 @@ func main() {
 
 	t := time.Now()
 	delete_counter := 0
-
-	log.Println("Service triggered")
 
 	c, err := os.ReadDir(path)
 	if err != nil {
@@ -51,7 +62,7 @@ func main() {
 
 		diff := t.Sub(info.ModTime()).Hours()
 
-		if diff > 24 {
+		if diff > float64(max_age_hours) {
 			e := os.RemoveAll(absPath)
 			if e != nil {
 				log.Fatal("Error while removing", absPath, e)

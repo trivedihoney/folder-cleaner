@@ -6,9 +6,9 @@
             "type": "go",
             "request": "launch",
             "mode": "auto",
-            "program": "${fileDirname}",
+            "program": "./main.go",
             "env": {},
-            "args": ["."]
+            "args": ["-max-age-hours=24","."]
         }
     ]
 }
