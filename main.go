@@ -21,13 +21,13 @@ func main() {
 	max_age_hours_ptr := flag.Int("max-age-hours", -1, "Files older than this will be deleted")
 	flag.Parse()
 
-	if *max_age_hours_ptr == -1 {
+	max_age_hours := *max_age_hours_ptr
+
+	if max_age_hours == -1 {
 		log.Fatal("Please provide the max-age-hours flag")
-	} else if *max_age_hours_ptr <= 0 {
+	} else if max_age_hours <= 0 {
 		log.Fatal("max-age-hours should be greater than 0")
 	}
-
-	max_age_hours := *max_age_hours_ptr
 
 	argsWithoutProg := flag.Args()
 
